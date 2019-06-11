@@ -16,6 +16,7 @@
   # run_once: true
   delegate_to: localhost
   check_mode: false
+  tags: install
 
 - name: Propagate alertmanager and amtool binaries
   copy:
@@ -28,6 +29,7 @@
   with_items:
     - alertmanager
     - amtool
+  tags: install
 
 - name: Install SELinux dependencies on RedHat OS family
   package:
@@ -42,6 +44,7 @@
   delay: 2
   when:
     - ansible_os_family == "RedHat"
+  tags: configure
 
 - name: Allow alertmanager to bind to port in SELinux on RedHat OS family
   seport:
@@ -52,6 +55,7 @@
   when:
     - ansible_version.full is version_compare('2.4', '>=')
     - ansible_selinux.status == "enabled"
+  tags: configure
 
 - name: Create required directories
   file:
@@ -64,6 +68,7 @@
     - "{{ openio_alertmanager_config_dir }}"
     - "{{ openio_alertmanager_config_dir }}/templates"
     - "{{ openio_alertmanager_storage_path }}"
+  tags: configure
 
 - name: Ensure systemd directory exists
   file:
@@ -72,6 +77,7 @@
     owner: root
     group: root
     mode: 0644
+  tags: configure
 
 - name: Copy systemd unit
   copy:
@@ -80,6 +86,7 @@
     owner: root
     group: root
     mode: 0644
+  tags: configure
 
 - name: Create defaults file
   template:
@@ -89,6 +96,7 @@
     group: root
     mode: 0644
   register: _am_defaults
+  tags: configure
 
 - name: Set alertmanager configuration
   template:
@@ -97,8 +105,8 @@
     owner: "root"
     group: "root"
     # validate: "amtool check-config %s"
-  tags: configure
   register: _am_conf
+  tags: configure
 
 - name: Ensure alertmanager service is started and enabled
   systemd:
@@ -106,5 +114,6 @@
     name: alertmanager
     state: "{{ 'started' if openio_alertmanager_provision_only else 'restarted' }}"
     enabled: "{{ openio_alertmanager_service_enabled }}"
+    tags: configure
   when: _am_defaults is changed or _am_conf is changed
 ...
