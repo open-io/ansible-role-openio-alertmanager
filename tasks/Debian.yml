@@ -21,40 +21,16 @@
 - name: Propagate alertmanager and amtool binaries
   copy:
     src: "/tmp/alertmanager-{{ openio_alertmanager_version }}.linux-{{ go_arch_map[ansible_architecture]
-      | default(ansible_architecture) }}/{{ item }}"
-    dest: "/usr/local/bin/{{ item }}"
+      | default(ansible_architecture) }}/{{ file }}"
+    dest: "/usr/local/bin/{{ file }}"
     mode: 0755
     owner: openio
     group: openio
   with_items:
     - alertmanager
     - amtool
-  tags: install
-
-- name: Install SELinux dependencies on RedHat OS family
-  package:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - libselinux-python
-    - policycoreutils-python
-  register: _download_packages
-  until: _download_packages is success
-  retries: 5
-  delay: 2
-  when:
-    - ansible_os_family == "RedHat"
-  tags: install
-
-- name: Allow alertmanager to bind to port in SELinux on RedHat OS family
-  seport:
-    ports: "{{ openio_alertmanager_bind_port }}"
-    proto: tcp
-    setype: http_port_t
-    state: present
-  when:
-    - ansible_version.full is version_compare('2.4', '>=')
-    - ansible_selinux.status == "enabled"
+  loop_control:
+    loop_var: file
   tags: install
 
 - name: Ensure systemd directory exists
