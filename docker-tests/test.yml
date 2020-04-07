@@ -1,4 +1,3 @@
-# Test playbook
 ---
 - hosts: all
   become: true
@@ -6,13 +5,9 @@
     namespace: TRAVIS
   roles:
     - role: users
-    - role: repo
+    - role: repository
       openio_repository_no_log: false
       openio_repository_mirror_host: mirror2.openio.io
+    - role: gridinit
     - role: role_under_test
-      openio_alertmanager_simple_email_enabled: true
-      openio_alertmanager_simple_email_from: "test@example.com"
-      openio_alertmanager_simple_email_to: [ "test@example.com", "test2@example.com" ]
-      openio_alertmanager_simple_email_smtp: "localhost"
-      openio_alertmanager_simple_email_pwd: ""
 ...

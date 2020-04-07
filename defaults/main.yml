@@ -1,14 +1,9 @@
 ---
-openio_alertmanager_bind_interface: "{{ openio_bind_mgmt_interface | d(ansible_default_ipv4.alias) }}"
-openio_alertmanager_bind_address: "{{ openio_bind_mgmt_address \
-  | default(hostvars[inventory_hostname]['ansible_' + openio_alertmanager_bind_interface]['ipv4']['address']) }}"
-openio_alertmanager_bind_port: 9093
+openio_alertmanager_namespace: "{{ namespace | d('OPENIO') }}"
+openio_alertmanager_maintenance_mode: "{{ openio_maintenance_mode | d(false) }}"
 
-openio_alertmanager_config_dir: /etc/prometheus/
-openio_alertmanager_storage_path: /var/lib/alertmanager
-
-openio_alertmanager_service_enabled: true
-openio_alertmanager_provision_only: false
+openio_alertmanager_bind_address: "{{ openio_mgmt_bind_address | d(ansible_default_ipv4.address) }}"
+openio_alertmanager_bind_port: 6901
 
 openio_alertmanager_resolve_timeout: 3m
 
@@ -50,4 +45,11 @@ openio_alertmanager_route:
   receiver: default
 
 openio_alertmanager_inhibit_rules: []
+
+openio_alertmanager_default_receivers:
+  - name: default
+
+openio_alertmanager_default_routes:
+  - receiver: default
+    group_wait: 30s
 ...
