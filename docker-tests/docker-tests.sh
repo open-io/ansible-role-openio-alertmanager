@@ -104,13 +104,16 @@ start_container() {
   set -x
   docker run --detach \
     "${run_opts[@]}" \
-    --volume="${PWD}:${role_dir}:rw" \
+    --volume="${PWD}:${role_dir}:ro" \
     -e IPVAGRANT=${IPVAGRANT:=""} \
     -e USR=${USR:=""} \
     -e PASS=${PASS:=""} \
     "${image_tag}" \
     "${init}" \
     > "${container_id}"
+  # Create an additional network to perform tests on
+  docker network create net2 --driver bridge || true
+  docker network connect net2 $(cat ${container_id})
   set +x
 }
 

@@ -1,57 +1,51 @@
 [![Build Status](https://travis-ci.org/open-io/ansible-role-openio-alertmanager.svg?branch=master)](https://travis-ci.org/open-io/ansible-role-openio-alertmanager)
 # Ansible role `alertmanager`
 
-An Ansible role for deploying alertmanager (monitoring).
+An Ansible role for install alertmanager. Specifically, the responsibilities of this role are to:
+
+- install and configure alertmanager
 
 ## Requirements
 
-- Ansible 2.5+
+- Ansible 2.9+
 
 ## Role Variables
 
-| Variable                                    | Description                                                          |
-| ------------------------------------------- | -------------------------------------------------------------------- |
-| `openio_alertmanager_bind_address`          | Alertmanager IP will listen on                                       |
-| `openio_alertmanager_bind_interface`        | Network interface alertmanager listens on                            |
-| `openio_alertmanager_bind_port`             | Port used by the alertmanager                                        |
-| `openio_alertmanager_config_dir`            | Path to the configuration directory                                  |
-| `openio_alertmanager_custom_receivers`      | List of custom receiver configurations                               |
-| `openio_alertmanager_custom_routes`         | List of custom routes for routing notifications                      |
-| `openio_alertmanager_inhibit_rules`         | List of rules to ignore alerts                                       |
-| `openio_alertmanager_provision_only`        | Provision only without restarting services                           |
-| `openio_alertmanager_resolve_timeout`       | Global alert resolve timeout                                         |
-| `openio_alertmanager_route`                 | Main route for sending notification, responsible for grouping alerts |
-| `openio_alertmanager_service_enabled`       | Enable systemd service                                               |
-| `openio_alertmanager_simple_email_enabled`  | Enable simple email notifications                                    |
-| `openio_alertmanager_simple_email_from`     | Simple email notifications sender                                    |
-| `openio_alertmanager_simple_email_pwd`      | Simple email notifications account password                          |
-| `openio_alertmanager_simple_email_smtp`     | Simple email notifications SMTP server                               |
-| `openio_alertmanager_simple_email_tls`      | Simple email notifications use TLS                                   |
-| `openio_alertmanager_simple_email_to`       | Simple email notifications list of email recipients                  |
-| `openio_alertmanager_simple_email_receiver` | Simple email notifications receiver                                  |
-| `openio_alertmanager_simple_email_route`    | Simple email notifications route                                     |
-| `openio_alertmanager_storage_path`          | Path to alertmanager storage                                         |
+| Variable   | Default | Comments (type)  |
+| :---       | :---    | :---             |
+| `openio_alertmanager_namespace` | `"{{ namespace \| d('OPENIO') }}"` | OpenIO Namespace|
+| `openio_alertmanager_maintenance_mode` | `"{{ openio_maintenance_mode \| d(false) }}"` | Maintenance mode |
+| `openio_alertmanager_bind_address` | `"{{ openio_mgmt_bind_address \| d(ansible_default_ipv4.address) }}"` | Binding IP address |
+| `openio_alertmanager_bind_port` | `6901` | Binding port |
+| `openio_alertmanager_resolve_timeout` | `3m` | Resolve timeout |
+| `openio_alertmanager_custom_receivers` | `[]` | Custom receivers |
+| `openio_alertmanager_simple_email_enabled` | `false` | Enable simple email |
+| `openio_alertmanager_simple_email_from` | `""` | |
+| `openio_alertmanager_simple_email_to` | `[]` | |
+| `openio_alertmanager_simple_email_smtp` | `""` | |
+| `openio_alertmanager_simple_email_tls` | `false` | |
+| `openio_alertmanager_simple_email_pwd` | `""` | |
+| `openio_alertmanager_simple_email_receiver:` | `` | |
+| `openio_alertmanager_simple_email_route:` | `` | |
+| `openio_alertmanager_custom_routes` | `[]` | Custom routes|
+| `openio_alertmanager_route:` | `` | route |
+| `openio_alertmanager_inhibit_rules` | `[]` | Inhibit rules |
+| `openio_alertmanager_default_receivers:` | `` | Default receivers |
+| `openio_alertmanager_default_routes:` | `` | Default routes |
 
 ## Dependencies
-
-No dependencies.
+- https://github.com/open-io/ansible-role-openio-service
 
 ## Example Playbook
 
 ```yaml
 - hosts: all
+  gather_facts: true
   become: true
-  vars:
-    NS: OPENIO
-  roles:
-    - role: users
-    - role: alertmanager
-```
 
-
-```ini
-[all]
-node1 ansible_host=192.168.1.173
+  tasks:
+    - include_role:
+        name: alertmanager
 ```
 
 ## Contributing
@@ -63,12 +57,4 @@ The best way to submit a PR is by first creating a fork of this Github project, 
 Github can then easily create a PR based on that branch.
 
 ## License
-
-GNU AFFERO GENERAL PUBLIC LICENSE, Version 3
-
-## Contributors
-
-- [Vladimir DOMBROVSKI](https://github.com/vdombrovski) (maintainer)
-- [Cedric DELGEHIER](https://github.com/cdelgehier) (maintainer)
-- [Romain ACCIARI](https://github.com/racciari) (maintainer)
-- [Vincent LEGOLL](https://github.com/vincent-legoll) (maintainer)
+Copyright (C) 2015-2020 OpenIO SAS

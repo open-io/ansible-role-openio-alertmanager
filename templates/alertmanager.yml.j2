@@ -5,7 +5,7 @@ global:
   resolve_timeout: {{ openio_alertmanager_resolve_timeout }}
 
 templates:
-  - '/etc/alertmanager/templates/*.tmpl'
+  - '{{ openio_service_conf_dir }}/templates/*.tmpl'
 
 receivers:
   {{ (openio_alertmanager_default_receivers + openio_alertmanager_custom_receivers +
