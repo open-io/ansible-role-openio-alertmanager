@@ -15,7 +15,7 @@ An Ansible role for install alertmanager. Specifically, the responsibilities of 
 | :---       | :---    | :---             |
 | `openio_alertmanager_namespace` | `"{{ namespace \| d('OPENIO') }}"` | OpenIO Namespace|
 | `openio_alertmanager_maintenance_mode` | `"{{ openio_maintenance_mode \| d(false) }}"` | Maintenance mode |
-| `openio_alertmanager_bind_address` | `"{{ openio_mgmt_bind_address \| d(ansible_default_ipv4.address) }}"` | Binding IP address |
+| `openio_alertmanager_bind_address` | `"{{ openio_bind_mgmt_address \| d(ansible_default_ipv4.address) }}"` | Binding IP address |
 | `openio_alertmanager_bind_port` | `6901` | Binding port |
 | `openio_alertmanager_resolve_timeout` | `3m` | Resolve timeout |
 | `openio_alertmanager_custom_receivers` | `[]` | Custom receivers |
